@@ -1,6 +1,7 @@
 import torch
 from torchvision import datasets, transforms
 
+
 def load_data(image_dir):
     """
     Retrieve images from path given to image folder which will be used to train the model
