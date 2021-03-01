@@ -8,13 +8,13 @@ from model_functions import model_builder, train_model, save_checkpoint
 main_dir = str(Path(__file__).parent.absolute())
 
 parser = argparse.ArgumentParser()
-parser.add_argument('data_dir', default="flowers")
-parser.add_argument('--save_dir', type=str, default = main_dir)
-parser.add_argument('--arch', type = str, choices = ['densenet121', 'vgg19'], default = 'densenet121')
-parser.add_argument('--learning_rate', type = float, default = 0.001)
-parser.add_argument('--hidden_units', type = int)
-parser.add_argument('--epochs', type = int, default = 10)
-parser.add_argument('--gpu', action='store_true')
+parser.add_argument('data_dir', default="flowers", help='path to the folder of images')
+parser.add_argument('--save_dir', type=str, default = main_dir + '/saved_models', help='path to the directory where checkpoint will be saved')
+parser.add_argument('--arch', type = str, choices = ['densenet121', 'vgg19'], default = 'densenet121', help='name of pretrained CNN model to use')
+parser.add_argument('--learning_rate', type = float, default = 0.001, help='learning rate used for optimezer')
+parser.add_argument('--hidden_units', type = int, help='number of hidden units')
+parser.add_argument('--epochs', type = int, default = 10, help='number of epochs to use in training the model')
+parser.add_argument('--gpu', action='store_true', help='use gpu to train the model')
 
 args = parser.parse_args()
 
