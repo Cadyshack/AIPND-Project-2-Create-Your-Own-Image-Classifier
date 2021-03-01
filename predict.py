@@ -6,16 +6,17 @@ from utility import predict, cat_to_name
 
 main_dir = str(Path(__file__).parent.absolute())
 
-parser = argparse.ArgumentParser()
-parser.add_argument('input', help="path to image used for prediction")
-parser.add_argument('checkpoint', help='name of checkpoint to load')
-parser.add_argument('--gpu', action='store_true', help='use gpu to train the model')
-parser.add_argument('--top_k', default=5, type=int, help='set the top k number of classes and their percent match')
-parser.add_argument('--category_names', default='cat_to_name.json', help='json file to use for mapping of categories to real flower names')
+def init_argparse():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('input', help="path to image used for prediction")
+    parser.add_argument('checkpoint', help='name of checkpoint to load')
+    parser.add_argument('--gpu', action='store_true', help='use gpu to train the model')
+    parser.add_argument('--top_k', default=5, type=int, help='set the top k number of classes and their percent match')
+    parser.add_argument('--category_names', default='cat_to_name.json', help='json file to use for mapping of categories to real flower names')
+    args = parser.parse_args()
+    return args
 
-
-args = parser.parse_args()
-
+args = init_argparse()
 # set device to cpu unless gpu specified
 device = "cuda:0" if args.gpu else "cpu"
 image_path = main_dir + '/' + args.input
@@ -30,7 +31,7 @@ flower_names = [cat_to_name[str(i+1)] for i in classes]
 def print_result():
     index=1
     for prob, flower in zip(probs, flower_names):
-        print(f"{index}. Flower Name: {flower} --", f"Probability: {prob * 100:.2f}%")
+        print(f"{index}. Flower Name: {flower} ..", f"Probability: {prob * 100:.2f}%")
         index += 1
 
 print_result()
