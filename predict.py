@@ -17,7 +17,7 @@ parser.add_argument('--category_names', default='cat_to_name.json', help='json f
 args = parser.parse_args()
 
 # set device to cpu unless gpu specified
-device = "cuda" if args.gpu else "cpu"
+device = "cuda:0" if args.gpu else "cpu"
 image_path = main_dir + '/' + args.input
 checkpoint = 'saved_models/' + args.checkpoint
 model = load_checkpoint(checkpoint, device)

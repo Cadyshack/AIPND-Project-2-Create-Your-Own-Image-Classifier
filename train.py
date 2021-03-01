@@ -19,7 +19,7 @@ parser.add_argument('--gpu', action='store_true', help='use gpu to train the mod
 args = parser.parse_args()
 
 # set device to cpu unless gpu specified
-device = "cuda" if args.gpu else "cpu"
+device = "cuda:0" if args.gpu else "cpu"
 
 # Get images for training
 image_data = util.load_data(args.data_dir)
