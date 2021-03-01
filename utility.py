@@ -60,9 +60,17 @@ def load_data(image_dir):
     return image_dict
 
 def process_image(image):
-    ''' Scales, crops, and normalizes a PIL image for a PyTorch model,
-        returns an Numpy array
-    '''
+    """
+    Scales, crops, and normalizes a PIL image for a PyTorch model,
+    
+    Parameters:
+      image_dir:
+        path to image to be processed
+    
+    Returns:
+      a Numpy array
+    """
+    
     
     # Process a PIL image for use in a PyTorch model
     img = Image.open(image)
@@ -91,16 +99,35 @@ def process_image(image):
     return image_tensor
 
 def cat_to_name(file):
-    
+    """
+    Loads a json file with mapping from category to flower name
+
+    Parameters:
+      file:
+        name of .json mapping file
+
+    Returns:
+      a python dictionary with mapping of categories to flower names
+    """
     with open(file, 'r') as f:
         cat_to_name = json.load(f)
     
     return cat_to_name
 
-
 def predict(image_path, model, topk, device):
-    ''' Predict the class (or classes) of an image using a trained deep learning model.
-    '''
+    """
+    Predict the class (or classes) of an image using a trained deep learning model.
+
+    Parameters:
+      image_path:
+        path to image to predict
+      model:
+        CNN model to use to make prediction
+      topk:
+        The number of results you wish to be printed
+      device:
+        Either "cpu" or "cuda".
+    """
     
     image = process_image(image_path)
     image = image.unsqueeze(0)

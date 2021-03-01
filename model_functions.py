@@ -7,6 +7,18 @@ from workspace_utils import keep_awake
 
 
 def model_builder(arch, hidden_units):
+    """
+    Build model based on command line inputs
+
+    Parameters:
+      arch:
+        The model architecture to use from torchvision. The two options are 'densenet121' or 'vgg19'
+      hidden_units:
+        The number of hidden units to use in the classifier layer
+
+    Returns:
+        CNN model with custom classifier feed forward layer.
+    """
     
     model = getattr(models, arch)(pretrained=True)
     
@@ -65,8 +77,28 @@ def model_builder(arch, hidden_units):
  
     return model
 
-def train_model(model, image_data, device, save_dir, learning_rate, epochs):
-    
+def train_model(model, image_data, device, learning_rate, epochs):
+    """
+    Traines the given model on given image data directory using user input parameters through command line
+
+    Parameters:
+      model:
+        The model to train
+      image_data:
+        The path to the folder with all the images to use to train the model. This folder needs to have three sub folders
+        (test, train, valid) with images already split up in each sub folders to be used to train, validate and test model accuracy.
+      device:
+        Either "cpu" or "cuda".
+      learning_rate:
+        learning rate to pass to Adam optimizer.
+      epochs:
+        number of epochs to use in training
+
+    Returns:
+        None - model is passed in and trained based on hyperparameters passed along with  model
+
+    """
+
     criterion = nn.NLLLoss()
     optimizer = optim.Adam(model.classifier.parameters(), lr=learning_rate)
     epochs = epochs
@@ -116,6 +148,19 @@ def train_model(model, image_data, device, save_dir, learning_rate, epochs):
             model.train()
 
 def save_checkpoint(arch, model, image_data, save_dir):
+    """
+    Save a checkpoint.pth file after model is trained in order to be able to later load this model without needing to train again
+
+    Parameters:
+      arch:
+        The model architecture to use from torchvision. The two options are 'densenet121' or 'vgg19'
+      model:
+        trained model to save as checkpoint
+      image_data:
+        image_data dictionary
+      save_dir:
+        directory to save the checkpoint
+    """
     checkpoint = {
                 'arch': arch,
                 'classifier': model.classifier ,
@@ -126,6 +171,15 @@ def save_checkpoint(arch, model, image_data, save_dir):
     torch.save(checkpoint, save_location)
 
 def load_checkpoint(filepath, device):
+    """
+    load checkpoint from pre-trained model
+
+    Parameters:
+      filepath:
+        path to checkpoint to load
+      device:
+        Either "cpu" or "cuda".
+    """
     checkpoint = torch.load(filepath, map_location=device)
     model = getattr(models, checkpoint["arch"])(pretrained=True)
     model.classifier = checkpoint["classifier"]

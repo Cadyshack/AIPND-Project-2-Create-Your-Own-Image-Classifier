@@ -28,7 +28,7 @@ image_data = util.load_data(args.data_dir)
 model = model_builder(args.arch, args.hidden_units)
 
 # train the model
-train_model(model, image_data, device, args.save_dir, args.learning_rate, args.epochs)
+train_model(model, image_data, device, args.learning_rate, args.epochs)
 
 # save the model
 save_checkpoint(args.arch, model, image_data, args.save_dir)
