@@ -1,5 +1,8 @@
+import numpy as np
 import torch
 from torchvision import datasets, transforms
+from PIL import Image
+import json
 
 
 def load_data(image_dir):
@@ -55,3 +58,58 @@ def load_data(image_dir):
                     "testloader": testloader
                 }
     return image_dict
+
+def process_image(image):
+    ''' Scales, crops, and normalizes a PIL image for a PyTorch model,
+        returns an Numpy array
+    '''
+    
+    # Process a PIL image for use in a PyTorch model
+    img = Image.open(image)
+    
+    # Resize the image and get the new dimensions to use in crop below
+    img.thumbnail((256,256))
+    width, height = img.size
+    left = (width - 224)/2
+    top = (height - 224)/2
+    right = (left + 224)
+    bottom = (top + 224)
+    
+    # Crop the center of the image to 224 x 224 dimension
+    img = img.crop((left, top, right, bottom))
+    np_image = np.array(img)
+    np_image = np_image.astype('float32') / 255.0
+    
+    # Normalize images in specific way needed for network
+    mean = np.array([0.485, 0.456, 0.406])
+    std = np.array([0.229, 0.224, 0.225])
+    np_image = (np_image - mean) / std
+    
+    # Transpose image array to fit PyTorch expeted shape with colour channel as first dimension
+    np_image = np_image.transpose((2,0,1))
+    image_tensor = torch.from_numpy(np_image)
+    return image_tensor
+
+def cat_to_name(file):
+    
+    with open(file, 'r') as f:
+        cat_to_name = json.load(f)
+    
+    return cat_to_name
+
+
+def predict(image_path, model, topk, device):
+    ''' Predict the class (or classes) of an image using a trained deep learning model.
+    '''
+    
+    image = process_image(image_path)
+    image = image.unsqueeze(0)
+    image = image.float()
+    image = image.to(device)
+    model = model
+    model.eval()
+    model.to(device)
+    with torch.no_grad():
+        log_ps = model.forward(image)
+        ps = torch.exp(log_ps)
+        return ps.topk(topk, dim=1)
