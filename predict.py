@@ -27,9 +27,12 @@ probs = probs.cpu().numpy().squeeze()
 classes = classes.cpu().numpy().squeeze()
 flower_names = [cat_to_name[str(i+1)] for i in classes]
 
-i=1
-for prob, flower in zip(probs, flower_names):
-    print(f"{i}. Flower Name: {flower} --", f"Probability: {prob * 100:.2f}%")
-    i+=1
+def print_result():
+    index=1
+    for prob, flower in zip(probs, flower_names):
+        print(f"{index}. Flower Name: {flower} --", f"Probability: {prob * 100:.2f}%")
+        index += 1
+
+print_result()
 
 
