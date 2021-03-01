@@ -1,6 +1,7 @@
 import argparse
 # importing Path function from pathlib to use to dynamically add the full path to this directory as to have it work on local machine
 from pathlib import Path
+import torch
 
 import utility as util
 from model_functions import model_builder, train_model, save_checkpoint
@@ -24,7 +25,7 @@ def init_argparse():
 args = init_argparse()
 
 # set device to cpu unless gpu specified
-device = "cuda:0" if args.gpu else "cpu"
+device = "cuda" if torch.cuda.is_available() and args.gpu else "cpu"
 
 # Get images for training
 image_data = util.load_data(args.data_dir)

@@ -1,6 +1,7 @@
 import argparse
 # importing Path function from pathlib to use to dynamically add the full path to this directory as to have it work on local machine
 from pathlib import Path
+import torch
 from model_functions import load_checkpoint
 from utility import predict, cat_to_name
 
@@ -18,7 +19,7 @@ def init_argparse():
 
 args = init_argparse()
 # set device to cpu unless gpu specified
-device = "cuda:0" if args.gpu else "cpu"
+device = "cuda" if torch.cuda.is_available() and args.gpu else "cpu"
 image_path = main_dir + '/' + args.input
 checkpoint = 'saved_models/' + args.checkpoint
 model = load_checkpoint(checkpoint, device)
@@ -31,7 +32,7 @@ flower_names = [cat_to_name[str(i+1)] for i in classes]
 def print_result():
     index=1
     for prob, flower in zip(probs, flower_names):
-        print(f"{index}. Flower Name: {flower} ..", f"Probability: {prob * 100:.2f}%")
+        print(f"{index}. Flower Name: {flower} --", f"Probability: {prob * 100:.2f}%")
         index += 1
 
 print_result()
