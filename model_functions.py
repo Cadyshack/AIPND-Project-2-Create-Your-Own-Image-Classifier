@@ -5,6 +5,7 @@ from torchvision import datasets, transforms, models
 from collections import OrderedDict
 from workspace_utils import keep_awake
 
+
 def model_builder(arch, hidden_units):
     
     model = getattr(models, arch)(pretrained=True)
@@ -123,3 +124,12 @@ def save_checkpoint(arch, model, image_data, save_dir):
              }
     save_location = save_dir + '/checkpoint2.pth'
     torch.save(checkpoint, save_location)
+
+def load_checkpoint(filepath, device):
+    checkpoint = torch.load(filepath, map_location=device)
+    model = getattr(models, checkpoint["arch"])(pretrained=True)
+    model.classifier = checkpoint["classifier"]
+    model.class_to_idx = checkpoint["class_to_idx"]
+    model.load_state_dict(checkpoint["state_dict"])
+    
+    return model
